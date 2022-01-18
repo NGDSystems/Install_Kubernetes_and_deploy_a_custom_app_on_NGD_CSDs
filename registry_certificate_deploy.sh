@@ -133,4 +133,3 @@ deploy_certificate_to_all_nodes
 sudo chmod 600 ~/.certs/registry.key
 
 echo "Done!"
-

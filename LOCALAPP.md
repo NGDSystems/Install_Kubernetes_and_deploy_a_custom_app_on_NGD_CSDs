@@ -1,5 +1,7 @@
 # How to build an image and deploy it on a local cluster of CSD devices
 
+This short tutorial will cover how to deploy a simple web service using a previously configured K3S cluster and a host with a few CSDs. We will use docker buildx for cross-compiling the custom image and a private docker registry to hold the images built.
+
 ## What is docker buildx?
 
 A CSD cluster is heterogeneous by nature, i.e, there are a mix of machines architectures available. The CSDs are based on aarch64 and the host is tipically x86_64. In order to deploy applications that run in the host and inside the CSDs, we need to cross-compile our images for both architectures. Docker buildx helps us by providing a preconfigured environment and commands that does exactly this. Using its interface, we tell docker the architectures we need to build and where they must be deployed, everything else is taken care automatically.
@@ -10,16 +12,133 @@ A registry is a place we put and organize our images separated primarily by tags
 
 ## Configure Docker's BuildX
 
+This repository provides a few scripts for speeding up the creation and management of a simple buildx image. They are the scripts prefixed with "buildx\_".
+
+To install buildx on your host machine, just execute the following. It will ask to install the dependency qemu-user-static and the command docker-buildx.
+
+```shell
+./buildx_install.sh
+```
+
+Whenever you restart your machine, use ./buildx_refresh.sh to bring back the buildx container on the host.
+
+```shell
+./buildx_refresh.sh
+```
+
+You should be able to cross-compile container images now using the command docker-buildx. However, to upload them into our private repository we will also need to register a custom certificate inside the buildx image. Keep following the tutorial to get to this point.
+
+If you ever need to uninstall the buildx image and the cli command, use buildx_uninstall.sh.
+
+```shell
+./buildx_uninstall.sh
+```
+
 ## Create a Private Docker Registry
 
-## Cross-compile a local image and publish it in Docker Hub
+To creating a private local registry we just need to start a container with the right image and, then, we are ready to upload our images. However, there is an important configuration in the registry image we must set. K3S requires a trusted registry to pull images from. Because of this, we need create a custom certificate and register this certificate on every K3S agents, the host and inside the docker buildx container.
+
+To create the certificate in the folder ~/.certs, we will use the command registry_certificate_create.sh, as bellow.
+
+```shell
+./registry_certificate_create.sh
+```
+
+The certificate needs to be created just once, but we may need to deploy it multiple times. For instance, if we reecreate the buildx container or if we add more CSDs to the server. To deploy the certificate we created above in the host, the CSDs and the buildx container, use the command registry_certificate_deploy.sh.
+
+```shell
+./registry_certificate_deploy.sh
+```
+
+Now that the relevant agents are recognizing this new certificate we will configure a registry using it. The command registry_install.sh encapsulates this logic.
+
+```shell
+./registry_install.sh
+```
+
+The registry should be up and running now. We should be able to upload our cross-compiled images to it using buildx, and both docker and k3s should recognize it.
+
+If we ever need to uninstall it, we can use the command registry_uninstall.sh, as bellow.
+
+```shell
+./registry_uninstall.sh
+```
 
 ## Cross-compile a local image and publish it in the private docker registry
 
-docker build -t
+```shell
+# Enter the folder holding the Dockerfile
+cd src
 
-## Deploy in Hybrid Mode
+# Build the image for amd64(x86_64) and arm64(aarch64) and push it to our repository
+docker buildx build \
+    --platform linux/amd64,linux/arm64 \
+    --push=true \
+    -t 10.1.1.1:27443/ngd-k3s-example:0.0.1 .
+```
 
-## Deploy in CSD mode
+## Cross-compile a local image and publish it in Docker Hub
 
-## Deploy in Host mode
+To upload the images to Docker Hub, you just need to replace the private registry with your username.
+
+```shell
+# Enter the folder holding the Dockerfile
+cd src
+
+# Build the image for amd64(x86_64) and arm64(aarch64) and push it to our repository
+docker buildx build \
+    --platform linux/amd64,linux/arm64 \
+    --push=true \
+    -t <DOCKER_HUB_USERNAME>/ngd-k3s-example:0.0.1 .
+```
+
+Sometimes the push fails due to network issues, try again if this is the case.
+
+## Deploy in Hybrid, CSD or Host Mode
+
+```shell
+# To deploy in hybrid mode, use a daemonset with no filter
+sudo kubectl apply -f daemonset_hybrid.yaml
+
+# To deploy only to CSDs, use a daemonset with a filter selecting only arm64 devices
+sudo kubectl apply -f daemonset_csd.yaml
+
+# Create the daemonset with a filter excluding all arm64 devices
+sudo kubectl apply -f daemonset_host.yaml
+```
+
+After selecting the desired daemonset, create a service to expose the pods created.
+
+```shell
+# Create the service
+sudo kubectl apply -f service.yaml
+```
+
+```shell
+for i in `seq 10`
+do
+  echo "$i"
+  curl localhost:5000
+done
+```
+
+Depending on the configuration you chose, some requests will be responded from CSDs and some will be responded by the host.
+
+## Undeploy in Hybrid, CSD or Host Mode
+
+```shell
+# To undeploy the hybrid mode
+sudo kubectl remove -f daemonset_hybrid.yaml
+
+# To undeploy the CSD mode
+sudo kubectl remove -f daemonset_csd.yaml
+
+# To undeploy the host mode
+sudo kubectl remove -f daemonset_host.yaml
+```
+
+And undeploy the service
+
+```shell
+sudo kubectl remove -f service.yaml
+```
