@@ -96,6 +96,8 @@ Sometimes the push fails due to network issues, try again if this is the case.
 
 ## Deploy in Hybrid, CSD or Host Mode
 
+We describe three deploy modes but, in fact, you could deploy in as any mode you want. We describe these as it is a common setup to evaluate the performance of a host only machine, a CSD only cluster and a mixed cluster (hybrid). Select one of the commands below depending on the type of deploy you wish to test.
+
 ```shell
 # To deploy in hybrid mode, use a daemonset with no filter
 sudo kubectl apply -f daemonset_hybrid.yaml
@@ -107,12 +109,14 @@ sudo kubectl apply -f daemonset_csd.yaml
 sudo kubectl apply -f daemonset_host.yaml
 ```
 
-After selecting the desired daemonset, create a service to expose the pods created.
+After selecting the desired daemonset, create a service to expose the pods that it created.
 
 ```shell
 # Create the service
 sudo kubectl apply -f service.yaml
 ```
+
+If all pods are already running and the service is initialized, we may test the service performing a simple request to our server. We will use a simple for and curl to call it multiple times.
 
 ```shell
 for i in `seq 10`
@@ -122,9 +126,11 @@ do
 done
 ```
 
-Depending on the configuration you chose, some requests will be responded from CSDs and some will be responded by the host.
+Depending on the configuration you chose, some requests will be responded from CSDs and some will be responded by the host. There are many other configurations we can set using kubernetes configuration files. For instance, an interesting one to investigate further could be how to load balance the requests.
 
 ## Undeploy in Hybrid, CSD or Host Mode
+
+To remove the daemonset, we call the same command as before, replacing apply for remove.
 
 ```shell
 # To undeploy the hybrid mode
