@@ -26,6 +26,8 @@ spec:
         - name: ngd-k3s-example
           image: 10.1.1.1:27443/ngd-k3s-example:0.0.1
           imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
           env:
             - name: NODE_NAME
               valueFrom:

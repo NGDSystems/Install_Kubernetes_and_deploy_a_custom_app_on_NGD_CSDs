@@ -112,14 +112,24 @@ sudo kubectl apply -f daemonset_host.yaml
 You can check if they were pulled and whether they are fine with the following commands
 
 ```shell
+# List all daemonsets
+sudo kubectl get daemonset
+
 # List all Pods
 sudo kubectl get pods
 
 # Summary of Pod status
 sudo kubectl describe pod <POD_NAME>
 
-# Pods log (stdout)
+# Read the Pod log (stdout)
 sudo kubectl logs <POD_NAME>
+
+# Run something inside the pods
+sudo kubectl exec -it <POD_NAME> -- bash
+sudo kubectl exec -it <POD_NAME> -- hostname -i
+sudo kubectl exec -it <POD_NAME> -- top
+sudo kubectl exec -it <POD_NAME> -- ls /app
+sudo kubectl exec -it <POD_NAME> -- cat /etc/hosts
 ```
 
 After selecting the desired daemonset, create a service to expose the pods that it created.
