@@ -14,16 +14,17 @@ arch = process.stdout.readline().decode('utf-8').strip()
 
 
 # Get the username we are running from
-uid = os.getuid()
+uid = str(os.getuid())
 user_name = getpass.getuser()
 node_name = os.getenv("NODE_NAME", "Unknown")
 pod_ip = os.getenv("POD_IP", "Unknown")
 pod_name = os.getenv("POD_NAME", "Unknown")
 pod_namespace = os.getenv("POD_NAME", "Unknown")
 home = os.path.expanduser('~')
-cpu_count = psutil.cpu_count()
-swap_memory = psutil.swap_memory().percent
-virtual_memory = psutil.virtual_memory()
+cpu_count = str(psutil.cpu_count())
+swap_memory = str(psutil.swap_memory().percent)
+virtual_memory = str(psutil.virtual_memory())
+
 
 # Cache the response
 cached_response = ("Hello World!" 
