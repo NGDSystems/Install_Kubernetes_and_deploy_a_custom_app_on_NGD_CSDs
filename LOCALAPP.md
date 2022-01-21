@@ -68,7 +68,7 @@ If we ever need to uninstall it, we can use the command registry_uninstall.sh, a
 
 ```shell
 # Enter the folder holding the Dockerfile
-cd src
+cd example
 
 # Build the image for amd64(x86_64) and arm64(aarch64) and push it to our repository
 docker buildx build \
@@ -109,6 +109,19 @@ sudo kubectl apply -f daemonset_csd.yaml
 sudo kubectl apply -f daemonset_host.yaml
 ```
 
+You can check if they were pulled and whether they are fine with the following commands
+
+```shell
+# List all Pods
+sudo kubectl get pods
+
+# Summary of Pod status
+sudo kubectl describe pod <POD_NAME>
+
+# Pods log (stdout)
+sudo kubectl logs <POD_NAME>
+```
+
 After selecting the desired daemonset, create a service to expose the pods that it created.
 
 ```shell
@@ -134,17 +147,17 @@ To remove the daemonset, we call the same command as before, replacing apply for
 
 ```shell
 # To undeploy the hybrid mode
-sudo kubectl remove -f daemonset_hybrid.yaml
+sudo kubectl delete -f daemonset_hybrid.yaml
 
 # To undeploy the CSD mode
-sudo kubectl remove -f daemonset_csd.yaml
+sudo kubectl delete -f daemonset_csd.yaml
 
 # To undeploy the host mode
-sudo kubectl remove -f daemonset_host.yaml
+sudo kubectl delete -f daemonset_host.yaml
 ```
 
 And undeploy the service
 
 ```shell
-sudo kubectl remove -f service.yaml
+sudo kubectl delete -f service.yaml
 ```

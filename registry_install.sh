@@ -24,7 +24,7 @@ then
 fi
 
 
-docker rm ngd_registry
+docker rm ngd_registry || true
 docker run -d \
   --restart=always \
   --name ngd_registry \
