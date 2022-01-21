@@ -23,7 +23,7 @@ pod_namespace = os.getenv("POD_NAME", "Unknown")
 home = os.path.expanduser('~')
 cpu_count = str(psutil.cpu_count())
 swap_memory = str(psutil.swap_memory().percent)
-virtual_memory = str(psutil.virtual_memory())
+virtual_memory = str(psutil.virtual_memory().percent)
 
 
 # Cache the response

@@ -113,10 +113,10 @@ You can check if they were pulled and whether they are fine with the following c
 
 ```shell
 # List all daemonsets
-sudo kubectl get daemonset
+sudo kubectl get daemonset -o wide
 
 # List all Pods
-sudo kubectl get pods
+sudo kubectl get pods -o wide
 
 # Summary of Pod status
 sudo kubectl describe pod <POD_NAME>
