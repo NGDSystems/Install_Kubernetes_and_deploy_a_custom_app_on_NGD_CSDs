@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 if [ -e "/home/$USER/.ngd/nodes" ]; then
   cat "/home/$USER/.ngd/nodes"

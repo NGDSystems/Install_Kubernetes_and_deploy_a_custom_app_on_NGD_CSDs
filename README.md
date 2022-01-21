@@ -34,14 +34,20 @@ do
 done
 ```
 
-Step 3. Get this project source
+Step 3. Follow instructions from [here](https://docs.docker.com/engine/install/ubuntu/) and install docker in the host and on every CSD. Make sure your current user is also in docker's group.
+
+```shell
+sudo usermod -aG docker $USER
+```
+
+Step 4. Get this project source
 
 ```shell
 git clone https://github.com/NGDSystems/Install_Lightweight_Kubernetes_K3S_on_NGD_CSDs.git
 cd Install_Lightweight_Kubernetes_K3S_on_NGD_CSDs
 ```
 
-Step 4. Install K3S
+Step 5. Install K3S
 
 ```shell
 # The command bellow must be executed in the host machine. It will install k3s master in the host and k3s-agent on every CSD node.
