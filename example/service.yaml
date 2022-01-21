@@ -4,11 +4,10 @@ metadata:
   name: ngd-k3s-example-svc
   namespace: default
 spec:
+  type: LoadBalancer
   selector:
-    app: ngd-k3s-example
+    name: ngd-k3s-example
   ports:
     - protocol: TCP
-      port: 5000
-      targetPort: 5000
-  clusterIP: None
-  type: ClusterIP
+      port: 5500
+      targetPort: 5500

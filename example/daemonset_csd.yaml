@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: ngd-k3s-example
+  namespace: default
   labels:
     app: ngd-k3s-example
 spec:
@@ -27,7 +28,7 @@ spec:
           image: 10.1.1.1:27443/ngd-k3s-example:0.0.1
           imagePullPolicy: Always
           ports:
-            - containerPort: 5000
+            - containerPort: 5500
           env:
             - name: NODE_NAME
               valueFrom:
