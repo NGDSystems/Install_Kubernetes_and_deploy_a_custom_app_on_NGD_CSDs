@@ -4,7 +4,7 @@ metadata:
   name: ngd-k3s-example
   namespace: default
   labels:
-    app: ngd-k3s-example
+    name: ngd-k3s-example
 spec:
   selector:
     matchLabels:

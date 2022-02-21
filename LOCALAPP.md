@@ -145,7 +145,7 @@ If all pods are already running and the service is initialized, we may test the 
 for i in `seq 10`
 do
   echo "$i"
-  curl localhost:5000
+  curl localhost:5500
 done
 ```
 

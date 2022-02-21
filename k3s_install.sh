@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-NODES=$(ngd_nodes.sh)
+NODES=$(./ngd_nodes.sh)
 
 if [ -e '/etc/systemd/system/k3s.service' ]
 then

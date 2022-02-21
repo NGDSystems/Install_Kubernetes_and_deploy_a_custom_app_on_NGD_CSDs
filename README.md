@@ -12,39 +12,39 @@ Kubernetes is container-based, which means it integrates with the container mana
 
 Installing K3S is pretty straightforward. If you use the scripts in this repository, we basically need SSH access to every CSD node, the application curl and the repositopry source code. The following commands summarize the process.
 
-Step 1. Make sure your user has access without password to every CSD in the server. For instance:
+Step 1. Get this project source
+
+```shell
+git clone https://github.com/NGDSystems/Kubernetes_on_CSD.git
+cd Kubernetes_on_CSD
+```
+
+Step 2. Make sure your user has access without password to every CSD in the server. For instance:
 
 ```shell
 # Create a RSA key with no password if you don't have one
 ssh-keygen -t rsa -f ~/.ssh/id_rsa -N ""
 
 # Register the public key on every nome, type the password to import the public key if requested
-for NODE in `ngd_nodes.sh`
+for NODE in `./ngd_nodes.sh`
 do
   ssh-copy-id -i ~/.ssh/id_rsa.pub $NODE
 done
 ```
 
-Step 2. Make sure every CSD has curl installed
+Step 3. Make sure every CSD has curl installed
 
 ```shell
-for NODE in `ngd_nodes.sh`
+for NODE in `./ngd_nodes.sh`
 do
   ssh $NODE sudo apt install curl -yq
 done
 ```
 
-Step 3. Follow instructions from [here](https://docs.docker.com/engine/install/ubuntu/) and install docker in the host and on every CSD. Make sure your current user is also in docker's group.
+Step 4. Follow instructions from [here](https://docs.docker.com/engine/install/ubuntu/) and install docker in the host and on every CSD. Make sure your current user is also in docker's group.
 
 ```shell
 sudo usermod -aG docker $USER
-```
-
-Step 4. Get this project source
-
-```shell
-git clone https://github.com/NGDSystems/Install_Lightweight_Kubernetes_K3S_on_NGD_CSDs.git
-cd Install_Lightweight_Kubernetes_K3S_on_NGD_CSDs
 ```
 
 Step 5. Install K3S
